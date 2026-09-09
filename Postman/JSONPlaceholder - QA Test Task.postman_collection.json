@@ -1,9 +1,11 @@
 {
   "info": {
-    "_postman_id": "b6f1a2c4-9d3e-4a71-8f52-1c7d0e5b4a90",
+    "_postman_id": "9610c270-7e4e-4276-8bb9-d1309c91f276",
     "name": "JSONPlaceholder - QA Test Task",
     "description": "Two GET requests against JSONPlaceholder. The host is never hard-coded: every URL is built from the {{baseUrl}} environment variable, so the same collection runs against another environment by switching the environment only.\n\nEach request asserts the status code and then walks the returned array, checking that the key properties of every object are present and are not null, undefined or empty.",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58096725",
+    "_collection_link": "https://go.postman.co/collection/58096725-9610c270-7e4e-4276-8bb9-d1309c91f276?source=collection_link"
   },
   "item": [
     {
