@@ -1,0 +1,151 @@
+{
+  "info": {
+    "_postman_id": "b6f1a2c4-9d3e-4a71-8f52-1c7d0e5b4a90",
+    "name": "JSONPlaceholder - QA Test Task",
+    "description": "Two GET requests against JSONPlaceholder. The host is never hard-coded: every URL is built from the {{baseUrl}} environment variable, so the same collection runs against another environment by switching the environment only.\n\nEach request asserts the status code and then walks the returned array, checking that the key properties of every object are present and are not null, undefined or empty.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET users",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const REQUIRED_KEYS = [\"id\", \"name\", \"username\", \"email\", \"phone\", \"website\"];",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response is a JSON array and is not empty\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "    pm.expect(pm.response.json()).to.be.an(\"array\").that.is.not.empty;",
+              "});",
+              "",
+              "pm.test(\"Every user has key properties that are not null, undefined or empty\", function () {",
+              "    const users = pm.response.json();",
+              "",
+              "    users.forEach(function (user, index) {",
+              "        REQUIRED_KEYS.forEach(function (key) {",
+              "            const label = \"users[\" + index + \"].\" + key;",
+              "",
+              "            pm.expect(user, label + \" is missing\").to.have.property(key);",
+              "            pm.expect(user[key], label + \" is null or undefined\").to.not.be.oneOf([null, undefined]);",
+              "            pm.expect(String(user[key]).trim(), label + \" is empty\").to.not.equal(\"\");",
+              "        });",
+              "    });",
+              "});",
+              "",
+              "pm.test(\"Every user has a populated nested address\", function () {",
+              "    const users = pm.response.json();",
+              "",
+              "    users.forEach(function (user, index) {",
+              "        const label = \"users[\" + index + \"].address\";",
+              "",
+              "        pm.expect(user.address, label).to.be.an(\"object\");",
+              "        pm.expect(String(user.address.city || \"\").trim(), label + \".city is empty\").to.not.equal(\"\");",
+              "        pm.expect(String(user.address.zipcode || \"\").trim(), label + \".zipcode is empty\").to.not.equal(\"\");",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/users",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users"
+          ]
+        },
+        "description": "The full list of users."
+      },
+      "response": []
+    },
+    {
+      "name": "GET posts of one user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const REQUIRED_KEYS = [\"id\", \"userId\", \"title\", \"body\"];",
+              "const EXPECTED_USER_ID = Number(pm.environment.get(\"userId\"));",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response is a JSON array and is not empty\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "    pm.expect(pm.response.json()).to.be.an(\"array\").that.is.not.empty;",
+              "});",
+              "",
+              "pm.test(\"Every post has key properties that are not null, undefined or empty\", function () {",
+              "    const posts = pm.response.json();",
+              "",
+              "    posts.forEach(function (post, index) {",
+              "        REQUIRED_KEYS.forEach(function (key) {",
+              "            const label = \"posts[\" + index + \"].\" + key;",
+              "",
+              "            pm.expect(post, label + \" is missing\").to.have.property(key);",
+              "            pm.expect(post[key], label + \" is null or undefined\").to.not.be.oneOf([null, undefined]);",
+              "            pm.expect(String(post[key]).trim(), label + \" is empty\").to.not.equal(\"\");",
+              "        });",
+              "    });",
+              "});",
+              "",
+              "pm.test(\"Every post belongs to the requested user\", function () {",
+              "    const posts = pm.response.json();",
+              "",
+              "    posts.forEach(function (post, index) {",
+              "        pm.expect(post.userId, \"posts[\" + index + \"].userId\").to.eql(EXPECTED_USER_ID);",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/posts?userId={{userId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "posts"
+          ],
+          "query": [
+            {
+              "key": "userId",
+              "value": "{{userId}}"
+            }
+          ]
+        },
+        "description": "The posts of a single user. The user is an environment variable too, so the request is not tied to one id."
+      },
+      "response": []
+    }
+  ]
+}

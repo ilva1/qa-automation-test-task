@@ -1,0 +1,11 @@
+bin/
+obj/
+packages/
+TestResults/
+screenshots/
+*.trx
+*.user
+*.suo
+.vs/
+.idea/
+.vscode/
